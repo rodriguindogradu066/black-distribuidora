@@ -633,17 +633,26 @@ function openDrawer() {
   lastFocus = document.activeElement;
   if (state.step === "done") state.step = "cart";
   $("#scrim").hidden = false; $("#drawer").hidden = false; document.body.style.overflow = "hidden";
-  renderDrawer(); $("#close-cart").focus();
+  renderDrawer();
+  const closeBtn = $("#close-cart"); if (closeBtn) closeBtn.focus();
 }
 function closeDrawer() {
   $("#scrim").hidden = true; $("#drawer").hidden = true; document.body.style.overflow = "";
+  state.step = "cart";
   if (lastFocus) lastFocus.focus();
 }
-$("#open-cart").addEventListener("click", openDrawer);
-$("#cartbar-btn").addEventListener("click", openDrawer);
+$("#open-cart").addEventListener("click", () => {
+  if (!$("#drawer").hidden) closeDrawer();
+  else openDrawer();
+});
+$("#cartbar-btn").addEventListener("click", () => {
+  if (!$("#drawer").hidden) closeDrawer();
+  else openDrawer();
+});
 $("#close-cart").addEventListener("click", closeDrawer);
 $("#scrim").addEventListener("click", closeDrawer);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#drawer").hidden) closeDrawer(); });
+closeDrawer();
 
 let form = store.get("black-form", { nome: "", fone: "", rua: "", bairro: "", ref: "", pag: "pix", obs: "" });
 function feeFor(b) { const f = CONFIG.bairros.find(x => x[0] === b); return f ? f[1] : 0; }
